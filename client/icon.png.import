@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://bh0tj0bovsaa6"
-path="res://.godot/imported/icon.png-d6d033c6d70cfbf519974a33c0ea31da.ctex"
+path="res://.godot/imported/icon.png-3d683962d203becf73e74fd335a0df61.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://addons/godot-golang-webrtc-signal/client/icon.png"
-dest_files=["res://.godot/imported/icon.png-d6d033c6d70cfbf519974a33c0ea31da.ctex"]
+source_file="res://addons/signal_ws/client/icon.png"
+dest_files=["res://.godot/imported/icon.png-3d683962d203becf73e74fd335a0df61.ctex"]
 
 [params]
 
