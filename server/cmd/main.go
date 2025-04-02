@@ -17,6 +17,9 @@ var certName = flag.String("cert", "", "certificate name")
 var upgrader = websocket.Upgrader{
 	ReadBufferSize:  1024,
 	WriteBufferSize: 1024,
+	CheckOrigin: func(r *http.Request) bool {
+		return true // Temporary for testing
+	},
 }
 
 func main() {
