@@ -11,7 +11,7 @@ import (
 )
 
 var port = flag.String("port", ":9000", "http port")
-var isHttps = flag.Bool("https", false, "use https")
+var certName = flag.String("cert", "", "certificate name")
 
 // TODO: figure out largest expected message size
 var upgrader = websocket.Upgrader{
@@ -38,15 +38,17 @@ func main() {
 		server.InitPeer(ws)
 	})
 
+	isHttps := *certName != ""
+
 	protocol := "http"
-	if *isHttps {
+	if isHttps {
 		protocol = "https"
 	}
 
 	log.Printf("Starting server on %s://localhost%s", protocol, *port)
 	var err error
-	if *isHttps {
-		err = http.ListenAndServeTLS(*port, "ssl.crt", "ssl.key", nil)
+	if isHttps {
+		err = http.ListenAndServeTLS(*port, *certName+".crt", *certName+".key", nil)
 	} else {
 		err = http.ListenAndServe(*port, nil)
 	}
