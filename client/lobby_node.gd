@@ -44,7 +44,7 @@ func _process(_delta: float) -> void:
 
 func _get_server_url() -> String:
 	var host = Ip.text
-	return "ws://" + host + ":" + str(DEFAULT_SERVER_PORT) + "/ws"
+	return "wss://" + host + ":" + str(DEFAULT_SERVER_PORT) + "/ws"
 
 func _on_host_pressed():
 	print("----")
