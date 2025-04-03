@@ -5,8 +5,8 @@ import (
 	"log"
 	"net/http"
 
-	".com/emeraldwalk/learngo/pkg"
-	".com/emeraldwalk/learngo/static"
+	".com/emeraldwalk/signalwsgo/pkg"
+	".com/emeraldwalk/signalwsgo/static"
 	"github.com/gorilla/websocket"
 )
 

@@ -1,4 +1,4 @@
-module .com/emeraldwalk/learngo
+module .com/emeraldwalk/signalwsgo
 
 go 1.24.0
 
