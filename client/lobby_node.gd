@@ -55,6 +55,7 @@ func _ready():
 	signal_ws_client.candidate_received.connect(_on_candidate_received)
 
 func _enter_waiting_room() -> void:
+	StartGameBtn.set_visible(is_host)
 	Entrance.hide()
 	WaitingRoom.show()
 
@@ -98,6 +99,7 @@ func _on_lobby_hosted(pid: int, lobby_id: int):
 
 func _on_lobby_joined(pid: int, lobby_id: int):
 	print("[lobby] ", peer.get_unique_id(), " lobby joined: lobby:", lobby_id, ", peer:", pid)
+	LobbyCode.text = "Waiting..."
 	_enter_waiting_room()
 
 func _on_lobby_sealed(lobby_id: int):
