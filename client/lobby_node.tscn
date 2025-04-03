@@ -1,6 +1,6 @@
 [gd_scene load_steps=2 format=3 uid="uid://gu5dqhfxbxt1"]
 
-[ext_resource type="Theme" uid="uid://crdoo66vhv4hb" path="res://resources/theme.tres" id="1_ascer"]
+[ext_resource type="Theme" uid="uid://crdoo66vhv4hb" path="res://addons/signal_ws/client/theme.tres" id="1_ascer"]
 
 [node name="Lobby" type="Control"]
 layout_mode = 3
