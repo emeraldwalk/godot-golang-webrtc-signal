@@ -3,6 +3,7 @@ class_name SignalWsClient
 signal connected(pid: int)
 signal lobby_hosted(pid: int, lobby_id: int)
 signal lobby_joined(pid: int, lobby_id: int)
+signal lobby_sealed(lobby_id: int)
 signal peer_connected(pid: int)
 signal peer_disconnected(pid: int)
 signal offer_received(pid: int, offer: String)
@@ -25,6 +26,18 @@ func connect_to_server(server_url: String, lobby_id: int = 0) -> void:
 	peer = SignalWsPeer.new(0)
 	peer.ws.connect_to_url(server_url)
 	peer.lobby_id = lobby_id
+
+func seal_lobby() -> void:
+	if peer == null:
+		print("Error: Peer is null.")
+		return
+
+	if peer.lobby_id == 0:
+		print("Error: Cannot seal lobby without a lobby id.")
+		return
+
+	print("[client] Sealing lobby with id: ", peer.lobby_id)
+	peer.send_msg(SignalWsMsg.new(peer.lobby_id, SignalWsMsg.Type.SEAL))
 
 # Handle current peer message
 func handle_peer_msg() -> bool:
@@ -50,6 +63,10 @@ func handle_peer_msg() -> bool:
 
 			print("[client] Joined game with lobby id: ", msg.id)
 			lobby_joined.emit(peer.peer_id, peer.lobby_id)
+
+		SignalWsMsg.Type.SEAL:
+			print("[client] Lobby sealed with id: ", msg.id)
+			lobby_sealed.emit(msg.id)
 
 		SignalWsMsg.Type.PEER_CONNECT:
 			peer_connected.emit(msg.id)
