@@ -1,4 +1,6 @@
-[gd_scene format=3 uid="uid://gu5dqhfxbxt1"]
+[gd_scene load_steps=2 format=3 uid="uid://gu5dqhfxbxt1"]
+
+[ext_resource type="Theme" uid="uid://crdoo66vhv4hb" path="res://resources/theme.tres" id="1_ascer"]
 
 [node name="Lobby" type="Control"]
 layout_mode = 3
@@ -7,6 +9,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+theme = ExtResource("1_ascer")
 
 [node name="UI" type="Control" parent="."]
 unique_name_in_owner = true
@@ -25,34 +28,44 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="HBoxContainer" type="HBoxContainer" parent="UI/Net"]
+[node name="VBoxContainer" type="VBoxContainer" parent="UI/Net"]
 custom_minimum_size = Vector2(0, 60)
 layout_mode = 2
+size_flags_vertical = 3
+theme_override_constants/separation = 24
+alignment = 1
 
-[node name="Label" type="Label" parent="UI/Net/HBoxContainer"]
+[node name="HBoxContainer2" type="HBoxContainer" parent="UI/Net/VBoxContainer"]
 layout_mode = 2
-text = "WebRTC:"
 
-[node name="Host" type="Button" parent="UI/Net/HBoxContainer"]
+[node name="IP" type="LineEdit" parent="UI/Net/VBoxContainer/HBoxContainer2"]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(80, 0)
+custom_minimum_size = Vector2(0, 100)
+layout_mode = 2
+size_flags_horizontal = 3
+text = "localhost"
+placeholder_text = "localhost"
+alignment = 1
+
+[node name="Host" type="Button" parent="UI/Net/VBoxContainer/HBoxContainer2"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(200, 100)
 layout_mode = 2
 text = "Host"
 
-[node name="Join" type="Button" parent="UI/Net/HBoxContainer"]
+[node name="HBoxContainer" type="HBoxContainer" parent="UI/Net/VBoxContainer"]
+layout_mode = 2
+
+[node name="LobbyID" type="LineEdit" parent="UI/Net/VBoxContainer/HBoxContainer"]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(80, 0)
+custom_minimum_size = Vector2(0, 100)
+layout_mode = 2
+size_flags_horizontal = 3
+placeholder_text = "CODE"
+alignment = 1
+
+[node name="Join" type="Button" parent="UI/Net/VBoxContainer/HBoxContainer"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(200, 100)
 layout_mode = 2
 text = "Join"
-
-[node name="IP" type="LineEdit" parent="UI/Net/HBoxContainer"]
-unique_name_in_owner = true
-layout_mode = 2
-size_flags_horizontal = 3
-text = "pi44g.local"
-placeholder_text = "pi44g.local"
-
-[node name="LobbyID" type="LineEdit" parent="UI/Net/HBoxContainer"]
-unique_name_in_owner = true
-layout_mode = 2
-size_flags_horizontal = 3
