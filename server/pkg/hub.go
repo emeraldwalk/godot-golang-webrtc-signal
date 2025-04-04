@@ -2,6 +2,11 @@ package pkg
 
 import (
 	"fmt"
+	"time"
+)
+
+const (
+	LOBBY_SEAL_GRACE_PERIOD = 10 * time.Second
 )
 
 type Hub struct {
@@ -36,6 +41,22 @@ func (hub *Hub) Run() {
 	}()
 
 	for {
+		// Close any sealed lobbies that have passed the grace period for joining
+		for _, lobby := range hub.lobbies {
+			if lobby.sealedAt.IsZero() {
+				continue
+			}
+
+			if time.Since(lobby.sealedAt) > LOBBY_SEAL_GRACE_PERIOD {
+				fmt.Println("[Hub] Lobby fully sealed, closing all peers")
+				for _, member := range lobby.members {
+					member.ws.Close()
+					delete(hub.peers, member.id)
+				}
+				delete(hub.lobbies, lobby.id)
+			}
+		}
+
 		select {
 		case peer := <-hub.connect:
 			fmt.Println("[Hub] <- connect")
@@ -78,6 +99,33 @@ func (hub *Hub) Run() {
 
 				lobby.members[source_peer.id] = source_peer
 				hub.peer_lobby[source_peer.id] = lobby.id
+
+			// case LEAVE:
+			// TODO: Handle leave
+
+			case SEAL:
+				lobby := hub.lobbies[LobbyID(peer_msg.msg.id)]
+
+				if lobby == nil {
+					fmt.Println("[Hub] Lobby not found")
+					continue
+				}
+
+				if lobby.host != source_peer.id {
+					fmt.Println("[Hub] Only host can seal lobby")
+					continue
+				}
+
+				if !lobby.sealedAt.IsZero() {
+					fmt.Println("[Hub] Lobby already sealed")
+					continue
+				}
+
+				lobby.sealedAt = time.Now()
+
+				for _, member := range lobby.members {
+					member.send <- msg(int(lobby.id), SEAL, nil)
+				}
 
 			case OFFER, ANSWER, CANDIDATE:
 				target_id := peer_msg.msg.id

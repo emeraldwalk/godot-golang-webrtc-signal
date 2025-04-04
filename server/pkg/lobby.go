@@ -1,11 +1,14 @@
 package pkg
 
+import "time"
+
 type LobbyID int
 
 type Lobby struct {
-	id      LobbyID
-	host    PeerID
-	members map[PeerID]*Peer
+	id       LobbyID
+	host     PeerID
+	members  map[PeerID]*Peer
+	sealedAt time.Time
 }
 
 func NewLobby(host *Peer) *Lobby {
