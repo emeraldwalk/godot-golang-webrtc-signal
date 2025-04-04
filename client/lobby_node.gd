@@ -21,7 +21,7 @@ var HostBtn: Button
 var JoinInput: LineEdit
 var JoinBtn: Button
 
-var LobbyCode: Label
+var LobbyCode: RichTextLabel
 var StartGameBtn: Button
 
 var is_host := false

@@ -53,13 +53,15 @@ unique_name_in_owner = true
 visible = false
 layout_mode = 2
 
-[node name="LobbyCode" type="Label" parent="WaitingRoom"]
+[node name="LobbyCode" type="RichTextLabel" parent="WaitingRoom"]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(0, 100)
 layout_mode = 2
+focus_mode = 2
 text = "[CODE]"
 horizontal_alignment = 1
 vertical_alignment = 1
+selection_enabled = true
 
 [node name="StartGameBtn" type="Button" parent="WaitingRoom"]
 unique_name_in_owner = true
