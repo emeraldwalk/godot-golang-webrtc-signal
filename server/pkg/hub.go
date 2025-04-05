@@ -54,10 +54,16 @@ func (hub *Hub) Run() {
 					delete(hub.peers, member.id)
 				}
 				delete(hub.lobbies, lobby.id)
+			} else {
+				fmt.Println("[Hub] Lobby sealed, waiting for grace period to expire")
 			}
 		}
 
 		select {
+		case <-time.After(1 * time.Second):
+			// This case triggers every second when no other channel has activity
+			// No action needed here; the loop will recheck the grace period
+
 		case peer := <-hub.connect:
 			fmt.Println("[Hub] <- connect")
 			hub.peers[peer.id] = peer
