@@ -1,6 +1,7 @@
 package main
 
 import (
+	"encoding/json"
 	"flag"
 	"log"
 	"net/http"
@@ -29,6 +30,10 @@ func main() {
 	server.Run()
 
 	http.Handle("/", http.FileServer(http.FS(static.Assets)))
+	http.HandleFunc("/admin", func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Content-Type", "application/json")
+		json.NewEncoder(w).Encode(server.GetDiagnostics())
+	})
 	http.HandleFunc("/test", func(w http.ResponseWriter, r *http.Request) {
 		http.ServeFile(w, r, "test.html")
 	})

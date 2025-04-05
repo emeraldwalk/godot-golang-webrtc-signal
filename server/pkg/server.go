@@ -23,6 +23,11 @@ type Server struct {
 	hub *Hub
 }
 
+type Diagnostics struct {
+	Lobbies []LobbyID
+	Peers   []PeerID
+}
+
 // Initialize a Hub and start listening for messages
 func (server *Server) Run() {
 	server.hub = NewHub()
@@ -35,6 +40,25 @@ func (server *Server) InitPeer(ws *websocket.Conn) {
 
 	go peerToHub(peer, server.hub)
 	go peerToWs(peer)
+}
+
+// Get a summary of the current state of the server.
+func (server *Server) GetDiagnostics() *Diagnostics {
+	lobbies := make([]LobbyID, 0, len(server.hub.lobbies))
+	peers := make([]PeerID, 0, len(server.hub.peers))
+
+	for id := range server.hub.lobbies {
+		lobbies = append(lobbies, id)
+	}
+
+	for id := range server.hub.peers {
+		peers = append(peers, id)
+	}
+
+	return &Diagnostics{
+		Lobbies: lobbies,
+		Peers:   peers,
+	}
 }
 
 // Next read deadline for the WebSocket connection is now + READ_TIMEOUT.
