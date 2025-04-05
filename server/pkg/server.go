@@ -50,7 +50,7 @@ func peerToHub(peer *Peer, hub *Hub) {
 	defer func() {
 		fmt.Println("[Server] peerToHub exiting")
 		hub.disconnect <- peer
-		peer.ws.Close()
+		peer.close()
 	}()
 
 	hub.connect <- peer
@@ -66,9 +66,19 @@ func peerToHub(peer *Peer, hub *Hub) {
 	fmt.Println("[Server] Starting message loop")
 
 	for {
+		fmt.Println("[Server] Reading message")
 		_, msg, err := peer.ws.ReadMessage()
 		if err != nil {
-			fmt.Println("Error reading message:", err)
+			// Closing the ws connection will happen when a ReadMessage() is
+			// already in progress. If we find peer.isClosed is true, we can
+			// assume the connection was closed by calling peer.close().
+			if peer.isClosed {
+				fmt.Println("[Server] Peer closed")
+				return
+			}
+
+			fmt.Println("[Server] Error reading message:", err)
+
 			break
 		}
 
@@ -83,7 +93,7 @@ func peerToWs(peer *Peer) {
 	pinger := time.NewTicker(PING_INTERVAL)
 	defer func() {
 		pinger.Stop()
-		peer.ws.Close()
+		peer.close()
 	}()
 
 	for {

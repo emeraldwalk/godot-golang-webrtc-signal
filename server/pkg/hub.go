@@ -50,7 +50,7 @@ func (hub *Hub) Run() {
 			if time.Since(lobby.sealedAt) > LOBBY_SEAL_GRACE_PERIOD {
 				fmt.Println("[Hub] Lobby fully sealed, closing all peers")
 				for _, member := range lobby.members {
-					member.ws.Close()
+					member.close()
 					delete(hub.peers, member.id)
 				}
 				delete(hub.lobbies, lobby.id)
