@@ -3,24 +3,26 @@
 ## Systemd Config
 
 1. Open a new config file for the service:
+
    ```sh
    sudo nano /etc/systemd/system/gowebrtcsignal.service
    ```
-1. Copy / paste the following template filling in <user> and <appfolder> placeholders
+
+1. Copy / paste the following template filling in <USER> and <APPDIR> placeholders
 
    ```ini
    [Unit]
    Description = Go WebRTC Signaling Server
 
    [Service]
-   Type           = simple
-   Restart        = always
-   RestartSec     = 5s
-   StandardOutput = append:%h/<appfolder>/stdout.log
-   StandardError  = append:%h/<appfolder>/stderr.log
-   ExecStart      = ./signalserver
-   WorkingDirectory = %h/<appfolder>
-   User = <user>
+   Type             = simple
+   Restart          = always
+   RestartSec       = 5s
+   StandardOutput   = append:<APPDIR>/stdout.log
+   StandardError    = append:<APPDIR>/stderr.log
+   ExecStart        = <APPDIR>/signalserver
+   WorkingDirectory = <APPDIR>
+   User             = <USER>
 
    [Install]
    WantedBy = multi-user.target
