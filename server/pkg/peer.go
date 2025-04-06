@@ -20,7 +20,7 @@ func (peer *Peer) close() {
 	if peer.isClosed {
 		return
 	}
-	fmt.Println("[Peer] Closing peer", int(peer.id))
+	fmt.Println("[Peer.close] Closing peer", int(peer.id))
 	peer.isClosed = true
 	close(peer.closed)
 	peer.ws.Close()

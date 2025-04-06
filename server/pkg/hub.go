@@ -34,10 +34,10 @@ func NewHub() *Hub {
 
 // Handle hub messages
 func (hub *Hub) Run() {
-	fmt.Println("[Hub] Run")
+	fmt.Println("[Hub.Run]")
 
 	defer func() {
-		fmt.Println("[Hub] Run exiting")
+		fmt.Println("[Hub.Run] exiting")
 	}()
 
 	for {
@@ -48,14 +48,14 @@ func (hub *Hub) Run() {
 			}
 
 			if time.Since(lobby.sealedAt) > LOBBY_SEAL_GRACE_PERIOD {
-				fmt.Println("[Hub] Lobby fully sealed, closing all peers")
+				fmt.Println("[Hub.Run] Lobby fully sealed, closing all peers")
 				for _, member := range lobby.members {
 					member.close()
 					delete(hub.peers, member.id)
 				}
 				delete(hub.lobbies, lobby.id)
 			} else {
-				fmt.Println("[Hub] Lobby sealed, waiting for grace period to expire")
+				fmt.Println("[Hub.Run] Lobby sealed, waiting for grace period to expire")
 			}
 		}
 
@@ -65,17 +65,17 @@ func (hub *Hub) Run() {
 			// No action needed here; the loop will recheck the grace period
 
 		case peer := <-hub.connect:
-			fmt.Println("[Hub] <- connect")
+			fmt.Println("[Hub.Run] <- connect")
 			hub.peers[peer.id] = peer
 
 		case peer := <-hub.disconnect:
-			fmt.Println("[Hub] <- disconnect")
+			fmt.Println("[Hub.Run] <- disconnect")
 			delete(hub.peers, peer.id)
 
 		case peer_msg := <-hub.peer_msg:
 			source_peer := hub.peers[peer_msg.sourceId]
 			if source_peer == nil {
-				fmt.Println("[Hub] Peer not found")
+				fmt.Println("[Hub.Run] Peer not found")
 				continue
 			}
 
@@ -113,17 +113,17 @@ func (hub *Hub) Run() {
 				lobby := hub.lobbies[LobbyID(peer_msg.msg.id)]
 
 				if lobby == nil {
-					fmt.Println("[Hub] Lobby not found")
+					fmt.Println("[Hub.Run] Lobby not found")
 					continue
 				}
 
 				if lobby.host != source_peer.id {
-					fmt.Println("[Hub] Only host can seal lobby")
+					fmt.Println("[Hub.Run] Only host can seal lobby")
 					continue
 				}
 
 				if !lobby.sealedAt.IsZero() {
-					fmt.Println("[Hub] Lobby already sealed")
+					fmt.Println("[Hub.Run] Lobby already sealed")
 					continue
 				}
 
@@ -139,7 +139,7 @@ func (hub *Hub) Run() {
 				peer := hub.peers[PeerID(target_id)]
 
 				if peer == nil || hub.peer_lobby[peer.id] != hub.peer_lobby[source_peer.id] {
-					fmt.Println("[Hub] Peer not found or not in same lobby")
+					fmt.Println("[Hub.Run] Peer not found or not in same lobby")
 					continue
 				}
 

@@ -69,10 +69,10 @@ func nextDeadline(timeout time.Duration) time.Time {
 // Connect a peer to the hub and pump WebSocket messages from peer to hub.
 // Disconnect from hub and close WebSocket when done.
 func peerToHub(peer *Peer, hub *Hub) {
-	fmt.Println("[Server] peerToHub")
+	fmt.Println("[Server.peerToHub]")
 
 	defer func() {
-		fmt.Println("[Server] peerToHub exiting")
+		fmt.Println("[Server.peerToHub] exiting")
 		hub.disconnect <- peer
 		peer.close()
 	}()
@@ -87,26 +87,26 @@ func peerToHub(peer *Peer, hub *Hub) {
 		return nil
 	})
 
-	fmt.Println("[Server] Starting message loop")
+	fmt.Println("[Server.peerToHub] Starting message loop")
 
 	for {
-		fmt.Println("[Server] Reading message")
+		fmt.Println("[Server.peerToHub] Reading message")
 		_, msg, err := peer.ws.ReadMessage()
 		if err != nil {
 			// Closing the ws connection will happen when a ReadMessage() is
 			// already in progress. If we find peer.isClosed is true, we can
 			// assume the connection was closed by calling peer.close().
 			if peer.isClosed {
-				fmt.Println("[Server] Peer closed")
+				fmt.Println("[Server.peerToHub] Peer closed")
 				return
 			}
 
-			fmt.Println("[Server] Error reading message:", err)
+			fmt.Println("[Server.peerToHub] Error reading message:", err)
 
 			break
 		}
 
-		fmt.Println("[Server] msg:", string(msg))
+		fmt.Println("[Server.peerToHub] msg:", string(msg))
 		hub.peer_msg <- NewPeerMsg(peer.id, msg)
 	}
 }
@@ -116,7 +116,7 @@ func peerToHub(peer *Peer, hub *Hub) {
 func peerToWs(peer *Peer) {
 	pinger := time.NewTicker(PING_INTERVAL)
 	defer func() {
-		fmt.Println("[Server] peerToWs exiting")
+		fmt.Println("[Server.peerToWs] exiting")
 		pinger.Stop()
 		peer.close()
 	}()
@@ -124,12 +124,12 @@ func peerToWs(peer *Peer) {
 	for {
 		select {
 		case <-peer.closed:
-			fmt.Println("[Server] Peer closed")
+			fmt.Println("[Server.peerToWs] Peer closed")
 			return
 
 		case msg, ok := <-peer.send:
 			if !ok {
-				fmt.Println("[Server] Peer send channel closed")
+				fmt.Println("[Server.peerToWs] Peer send channel closed")
 				peer.ws.WriteMessage(websocket.CloseMessage, []byte{})
 				return
 			}
@@ -141,7 +141,7 @@ func peerToWs(peer *Peer) {
 
 				err := peer.ws.WriteMessage(websocket.TextMessage, msg)
 				if err != nil {
-					fmt.Println("[Server] Error writing message:", err)
+					fmt.Println("[Server.peerToWs] Error writing message:", err)
 					return
 				}
 
@@ -156,7 +156,7 @@ func peerToWs(peer *Peer) {
 		case <-pinger.C:
 			peer.ws.SetWriteDeadline(nextDeadline(WRITE_TIMEOUT))
 			if err := peer.ws.WriteMessage(websocket.PingMessage, nil); err != nil {
-				fmt.Println("[Server] Error writing ping message:", err)
+				fmt.Println("[Server.peerToWs] Error writing ping message:", err)
 				return
 			}
 		}
