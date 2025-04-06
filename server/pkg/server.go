@@ -116,12 +116,17 @@ func peerToHub(peer *Peer, hub *Hub) {
 func peerToWs(peer *Peer) {
 	pinger := time.NewTicker(PING_INTERVAL)
 	defer func() {
+		fmt.Println("[Server] peerToWs exiting")
 		pinger.Stop()
 		peer.close()
 	}()
 
 	for {
 		select {
+		case <-peer.closed:
+			fmt.Println("[Server] Peer closed")
+			return
+
 		case msg, ok := <-peer.send:
 			if !ok {
 				fmt.Println("[Server] Peer send channel closed")
