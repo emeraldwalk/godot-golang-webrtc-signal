@@ -54,6 +54,7 @@ func (hub *Hub) Run() {
 					delete(hub.peers, member.id)
 				}
 				delete(hub.lobbies, lobby.id)
+				fmt.Printf("[Hub.Run] Lobby %d closed\n", int(lobby.id))
 			} else {
 				fmt.Println("[Hub.Run] Lobby sealed, waiting for grace period to expire")
 			}
@@ -65,17 +66,17 @@ func (hub *Hub) Run() {
 			// No action needed here; the loop will recheck the grace period
 
 		case peer := <-hub.connect:
-			fmt.Println("[Hub.Run] <- connect")
+			fmt.Printf("[Hub.Run] <- connect peer %d\n", int(peer.id))
 			hub.peers[peer.id] = peer
 
 		case peer := <-hub.disconnect:
-			fmt.Println("[Hub.Run] <- disconnect")
+			fmt.Printf("[Hub.Run] <- disconnect peer %d\n", int(peer.id))
 			delete(hub.peers, peer.id)
 
 		case peer_msg := <-hub.peer_msg:
 			source_peer := hub.peers[peer_msg.sourceId]
 			if source_peer == nil {
-				fmt.Println("[Hub.Run] Peer not found")
+				fmt.Printf("[Hub.Run] Peer not found %d\n", int(peer_msg.sourceId))
 				continue
 			}
 
