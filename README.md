@@ -4,7 +4,7 @@
 
 1. Open a new config file for the service:
    ```sh
-   sudo nano /etc/systemd/system/gowebrtcsignal.service`
+   sudo nano /etc/systemd/system/gowebrtcsignal.service
    ```
 1. Copy / paste the following template filling in <user> and <appfolder> placeholders
 
