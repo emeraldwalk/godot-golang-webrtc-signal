@@ -6,6 +6,7 @@ signal player_added(pid: int)
 signal lobby_sealed(lobby_id: int)
 
 var packed_scene = preload("lobby_node.tscn")
+var scene
 
 var peer: WebRTCMultiplayerPeer = WebRTCMultiplayerPeer.new()
 var signal_ws_client: SignalWsClient = SignalWsClient.new()
@@ -26,8 +27,9 @@ var StartGameBtn: Button
 
 var is_host := false
 
+
 func _ready():
-	var scene = packed_scene.instantiate()
+	scene = packed_scene.instantiate()
 	add_child(scene)
 
 	Entrance = scene.get_node("%Entrance")
@@ -53,6 +55,11 @@ func _ready():
 	signal_ws_client.answer_received.connect(_on_remote_description_received.bind("answer"))
 	signal_ws_client.offer_received.connect(_on_remote_description_received.bind("offer"))
 	signal_ws_client.candidate_received.connect(_on_candidate_received)
+
+
+func hide() -> void:
+	scene.hide()
+
 
 func _enter_waiting_room() -> void:
 	StartGameBtn.set_visible(is_host)
@@ -97,10 +104,13 @@ func _on_lobby_hosted(pid: int, lobby_id: int):
 	LobbyCode.text = str(lobby_id)
 	_enter_waiting_room()
 
-func _on_lobby_joined(pid: int, lobby_id: int):
+func _on_lobby_joined(pid: int, lobby_id: int, is_sealed: bool):
 	print("[lobby] ", peer.get_unique_id(), " lobby joined: lobby:", lobby_id, ", peer:", pid)
 	LobbyCode.text = "Waiting..."
 	_enter_waiting_room()
+
+	if is_sealed:
+		_on_lobby_sealed(lobby_id)
 
 func _on_lobby_sealed(lobby_id: int):
 	print("[lobby] ", peer.get_unique_id(), " lobby sealed:", lobby_id)

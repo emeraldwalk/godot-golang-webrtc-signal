@@ -2,7 +2,7 @@ class_name SignalWsClient
 
 signal connected(pid: int)
 signal lobby_hosted(pid: int, lobby_id: int)
-signal lobby_joined(pid: int, lobby_id: int)
+signal lobby_joined(pid: int, lobby_id: int, is_sealed: bool)
 signal lobby_sealed(lobby_id: int)
 signal peer_connected(pid: int)
 signal peer_disconnected(pid: int)
@@ -62,7 +62,7 @@ func handle_peer_msg() -> bool:
 				return false
 
 			print("[client] Joined game with lobby id: ", msg.id)
-			lobby_joined.emit(peer.peer_id, peer.lobby_id)
+			lobby_joined.emit(peer.peer_id, peer.lobby_id, msg.data == "true")
 
 		SignalWsMsg.Type.SEAL:
 			print("[client] Lobby sealed with id: ", msg.id)

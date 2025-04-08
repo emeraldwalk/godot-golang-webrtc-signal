@@ -97,7 +97,14 @@ func (hub *Hub) Run() {
 
 				lobby := hub.lobbies[LobbyID(peer_msg.msg.id)]
 
-				source_peer.send <- msg(int(lobby.id), JOIN, nil)
+				// We pass whether the lobby has already been sealed or not. This
+				// can happen during the grace period after host has sealed the
+				// lobby, but peers can still join for a short window. We need
+				// to inform the peer so the client knows whether to advance
+				// them to the game or keep them in the lobby.
+				isSealed := fmt.Sprintf("%t", !lobby.sealedAt.IsZero())
+
+				source_peer.send <- msg(int(lobby.id), JOIN, []byte(isSealed))
 
 				for _, member := range lobby.members {
 					source_peer.send <- msg(int(member.id), PEER_CONNECT, nil)
