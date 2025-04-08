@@ -5,6 +5,8 @@ const DEFAULT_SERVER_PORT = 9000
 signal player_added(pid: int)
 signal lobby_sealed(lobby_id: int)
 
+@export var default_host := "localhost"
+
 var packed_scene = preload("lobby_node.tscn")
 var scene
 
@@ -41,6 +43,8 @@ func _ready():
 	JoinBtn = scene.get_node("%JoinBtn")
 	LobbyCode = scene.get_node("%LobbyCode")
 	StartGameBtn = scene.get_node("%StartGameBtn")
+
+	HostInput.text = default_host
 
 	HostBtn.pressed.connect(_on_host_pressed)
 	JoinBtn.pressed.connect(_on_join_pressed)
