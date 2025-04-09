@@ -7,8 +7,9 @@ signal lobby_sealed(lobby_id: int)
 
 @export var default_host := "localhost"
 
-var packed_scene = preload("lobby_node.tscn")
-var scene
+var packed_scene: PackedScene = preload("lobby_node.tscn")
+
+var root_node: Node
 
 var peer: WebRTCMultiplayerPeer = WebRTCMultiplayerPeer.new()
 var signal_ws_client: SignalWsClient = SignalWsClient.new()
@@ -31,18 +32,18 @@ var is_host := false
 
 
 func _ready():
-	scene = packed_scene.instantiate()
-	add_child(scene)
+	root_node = packed_scene.instantiate()
+	add_child(root_node)
 
-	Entrance = scene.get_node("%Entrance")
-	WaitingRoom = scene.get_node("%WaitingRoom")
+	Entrance = root_node.get_node("%Entrance")
+	WaitingRoom = root_node.get_node("%WaitingRoom")
 
-	HostInput = scene.get_node("%HostInput")
-	HostBtn = scene.get_node("%HostBtn")
-	JoinInput = scene.get_node("%JoinInput")
-	JoinBtn = scene.get_node("%JoinBtn")
-	LobbyCode = scene.get_node("%LobbyCode")
-	StartGameBtn = scene.get_node("%StartGameBtn")
+	HostInput = root_node.get_node("%HostInput")
+	HostBtn = root_node.get_node("%HostBtn")
+	JoinInput = root_node.get_node("%JoinInput")
+	JoinBtn = root_node.get_node("%JoinBtn")
+	LobbyCode = root_node.get_node("%LobbyCode")
+	StartGameBtn = root_node.get_node("%StartGameBtn")
 
 	HostInput.text = default_host
 
@@ -62,7 +63,7 @@ func _ready():
 
 
 func hide() -> void:
-	scene.hide()
+	root_node.hide()
 
 
 func _enter_waiting_room() -> void:
