@@ -1,6 +1,6 @@
 [gd_scene load_steps=2 format=3 uid="uid://gu5dqhfxbxt1"]
 
-[ext_resource type="Theme" uid="uid://crdoo66vhv4hb" path="res://addons/signal_ws/client/theme.tres" id="1_ascer"]
+[ext_resource type="Theme" uid="uid://crdoo66vhv4hb" path="res://addons/signal_ws/client/theme.tres" id="1_idqkq"]
 
 [node name="Lobby" type="VBoxContainer"]
 anchors_preset = 14
@@ -11,7 +11,7 @@ offset_top = -154.0
 offset_bottom = 154.0
 grow_horizontal = 2
 grow_vertical = 2
-theme = ExtResource("1_ascer")
+theme = ExtResource("1_idqkq")
 
 [node name="Entrance" type="GridContainer" parent="."]
 unique_name_in_owner = true

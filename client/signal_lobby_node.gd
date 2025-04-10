@@ -7,7 +7,7 @@ signal lobby_sealed(lobby_id: int)
 
 @export var default_host := "localhost"
 
-var packed_scene: PackedScene = preload("lobby_node.tscn")
+var packed_scene: PackedScene = preload("signal_lobby_node.tscn")
 
 var root_node: Node
 
