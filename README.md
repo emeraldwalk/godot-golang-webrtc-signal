@@ -1,6 +1,10 @@
 # Golang WebRTC Signaling Server
 
-WebRTC signal server with SSL support written in Go. Supports hosting and joining lobbies. Includes Godot client.
+WebRTC signal server with SSL support written in Go. Supports hosting and joining lobbies. Includes Godot client. I built this to allow WebRTC connections from web builds in Godot which requires SSL. It also works with other build types.
+
+> Note: Non-web builds require installing additional WebRTC libraries. See [webrtc.html#using-webrtc-in-godot ](https://docs.godotengine.org/en/stable/tutorials/networking/webrtc.html#using-webrtc-in-godot)
+
+> Note: Currently, it is assumed this will be run somewhere on your LAN and that IPs can be resolved locally. I may extend this in the future for WAN usage.
 
 ## Project Architecture
 
@@ -36,9 +40,7 @@ Messages are passing in a simple serialized format in the form of `type|pid|data
 - pid - peer id identifiying a peer in the WebRTC mesh
 - data - optional data used by some message type
 
-## Installation
-
-### Client
+## Client
 
 The client code can be installed as a Godot plugin
 
@@ -64,6 +66,27 @@ The client code can be installed as a Godot plugin
       signal_lobby.player_added.connect(_on_player_added)
       signal_lobby.lobby_sealed.connect(_on_lobby_sealed)
    ```
+
+## Server
+
+### Running Locally
+
+In the `/server` directory, you can start the server by running:
+
+```sh
+go run cmd/main.go
+```
+
+### Deployment
+
+1. To build the server run:
+
+```sh
+scripts/build.sh
+```
+
+1. This will build an executable `build/signalserver`
+1. Copy the executable to wherever you want to run it
 
 ## Systemd Config
 
