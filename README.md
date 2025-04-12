@@ -77,6 +77,15 @@ In the `/server` directory, you can start the server by running:
 go run cmd/main.go
 ```
 
+To use an SSL cert, you'll need to place a `.crt` and `.key` file in the `/server` directory with the same base name.
+e.g. `ssl.crt` and `ssl.key`
+
+Then use the `-cert` flag to provide the cert base name.
+
+```sh
+go run cmd/main.go -cert ssl
+```
+
 ### Deployment
 
 1. To build the server run:
@@ -88,7 +97,16 @@ scripts/build.sh
 1. This will build an executable `build/signalserver`
 1. Copy the executable to wherever you want to run it
 
-## Systemd Config
+To use an SSL cert, you'll need to place a `.crt` and `.key` file in the same directory as the executable with the same base name.
+e.g. `ssl.crt` and `ssl.key`
+
+Then use the `-cert` flag to provide the cert base name.
+
+```sh
+./signalserver -cert ssl
+```
+
+#### Systemd Config
 
 The server can be configured via systemd on a linux server such as a Raspberry Pi.
 
