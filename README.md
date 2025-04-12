@@ -22,6 +22,10 @@ The client code can be installed as a Godot plugin
 
    ![SignalLobby](docs/signal-lobby.png)
 
+1. After adding the node to a scene, you can right-click `% Access as Unique Name` to make it easier to access in a script.
+
+   ![SignalLobby % Access as Unique Name](docs/signal-lobby-node.png)
+
 1. You can connect to the `player_added` and `lobby_sealed` signals:
 
    ```gdscript
