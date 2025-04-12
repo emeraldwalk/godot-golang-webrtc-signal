@@ -25,7 +25,7 @@ The client code can be installed as a Godot plugin
 1. You can connect to the `player_added` and `lobby_sealed` signals:
 
    ```gdscript
-   @onready var signal_lobby = %SignalLobby
+   @onready var signal_lobby = %SignalLobby # SignalLobby node set to "% Access as Unique Name"
 
    func _ready() -> void:
       signal_lobby.player_added.connect(_on_player_added)
