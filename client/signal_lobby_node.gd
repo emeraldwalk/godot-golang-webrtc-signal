@@ -66,6 +66,10 @@ func hide() -> void:
 	root_node.hide()
 
 
+func show() -> void:
+	root_node.show()
+
+
 func _enter_waiting_room() -> void:
 	StartGameBtn.set_visible(is_host)
 	Entrance.hide()
