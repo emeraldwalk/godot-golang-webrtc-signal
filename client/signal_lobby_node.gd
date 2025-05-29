@@ -141,12 +141,12 @@ func _on_peer_connected(pid: int):
 	print("[lobby] ", peer.get_unique_id(), " peer connected: ", pid)
 
 	var peer_cn: WebRTCPeerConnection = WebRTCPeerConnection.new()
-	peer_cn.initialize()
-
-	# Not needed for LAN only gaming. TBD whether I'll add WAN support.
-	# peer_cn.initialize({
-	# 	"iceServers": [ { "urls": ["stun:stun.l.google.com:19302"] } ]
-	# })
+	peer_cn.initialize({
+		# Not needed for LAN only gaming, but also in theory shouldn't hurt to
+		# have it. TBD whether this is enough for WAN or if it also requires
+		# router config.
+		"iceServers": [ {"urls": ["stun:stun.l.google.com:19302"]}]
+	})
 
 	peer_cn.session_description_created.connect(
 		func _on_session_description_created(type: String, sdp: String):
