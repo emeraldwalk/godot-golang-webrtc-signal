@@ -107,7 +107,7 @@ func _on_connected(pid: int):
 
 func _on_lobby_hosted(pid: int, lobby_id: int):
 	print("[lobby] ", peer.get_unique_id(), " lobby hosted: lobby:", lobby_id, ", peer:", pid)
-	lobby_code.text = str(lobby_id)
+	lobby_code.text = str(lobby_id).insert(3, "-")
 	_enter_waiting_room()
 
 func _on_lobby_joined(pid: int, lobby_id: int, is_sealed: bool):
