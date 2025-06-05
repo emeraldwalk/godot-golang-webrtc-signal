@@ -24,6 +24,7 @@ size_flags_horizontal = 3
 placeholder_text = "CODE"
 alignment = 1
 max_length = 7
+virtual_keyboard_enabled = false
 
 [node name="HBoxContainer3" type="HBoxContainer" parent="."]
 layout_mode = 2
