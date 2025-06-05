@@ -1,25 +1,27 @@
-[gd_scene load_steps=2 format=3 uid="uid://gu5dqhfxbxt1"]
+[gd_scene load_steps=3 format=3 uid="uid://gu5dqhfxbxt1"]
 
 [ext_resource type="Theme" uid="uid://crdoo66vhv4hb" path="res://addons/signal_ws/client/theme.tres" id="1_idqkq"]
+[ext_resource type="PackedScene" uid="uid://coongtkrhiu8m" path="res://addons/signal_ws/client/keypad.tscn" id="2_f1njc"]
 
 [node name="Lobby" type="VBoxContainer"]
 anchors_preset = 14
 anchor_top = 0.5
 anchor_right = 1.0
 anchor_bottom = 0.5
-offset_top = -154.0
-offset_bottom = 154.0
+offset_top = -488.0
+offset_bottom = 488.0
 grow_horizontal = 2
 grow_vertical = 2
 theme = ExtResource("1_idqkq")
 
-[node name="Entrance" type="GridContainer" parent="."]
+[node name="Entrance" type="VBoxContainer" parent="."]
 unique_name_in_owner = true
 layout_mode = 2
-size_flags_vertical = 4
-columns = 2
 
-[node name="HostInput" type="LineEdit" parent="Entrance"]
+[node name="HBoxContainer" type="HBoxContainer" parent="Entrance"]
+layout_mode = 2
+
+[node name="HostInput" type="LineEdit" parent="Entrance/HBoxContainer"]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(0, 100)
 layout_mode = 2
@@ -28,25 +30,15 @@ text = "localhost"
 placeholder_text = "localhost"
 alignment = 1
 
-[node name="HostBtn" type="Button" parent="Entrance"]
+[node name="HostBtn" type="Button" parent="Entrance/HBoxContainer"]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(200, 100)
 layout_mode = 2
 text = "Host"
 
-[node name="JoinInput" type="LineEdit" parent="Entrance"]
+[node name="Keypad" parent="Entrance" instance=ExtResource("2_f1njc")]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(0, 100)
 layout_mode = 2
-size_flags_horizontal = 3
-placeholder_text = "CODE"
-alignment = 1
-
-[node name="JoinBtn" type="Button" parent="Entrance"]
-unique_name_in_owner = true
-custom_minimum_size = Vector2(200, 100)
-layout_mode = 2
-text = "Join"
 
 [node name="WaitingRoom" type="VBoxContainer" parent="."]
 unique_name_in_owner = true

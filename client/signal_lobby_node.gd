@@ -16,17 +16,15 @@ var signal_ws_client: SignalWsClient = SignalWsClient.new()
 var mesh_initialized := false
 
 # UI
-var Entrance: Container
-var WaitingRoom: Container
+var entrance: Container
+var waiting_room: Container
 
-var HostInput: LineEdit
-var HostBtn: Button
+var host_input: LineEdit
+var host_btn: Button
 
-var JoinInput: LineEdit
-var JoinBtn: Button
-
-var LobbyCode: RichTextLabel
-var StartGameBtn: Button
+var lobby_code: RichTextLabel
+var keypad: Keypad
+var start_game_btn: Button
 
 var is_host := false
 
@@ -35,21 +33,20 @@ func _ready():
 	root_node = packed_scene.instantiate()
 	add_child(root_node)
 
-	Entrance = root_node.get_node("%Entrance")
-	WaitingRoom = root_node.get_node("%WaitingRoom")
+	entrance = root_node.get_node("%Entrance")
+	waiting_room = root_node.get_node("%WaitingRoom")
 
-	HostInput = root_node.get_node("%HostInput")
-	HostBtn = root_node.get_node("%HostBtn")
-	JoinInput = root_node.get_node("%JoinInput")
-	JoinBtn = root_node.get_node("%JoinBtn")
-	LobbyCode = root_node.get_node("%LobbyCode")
-	StartGameBtn = root_node.get_node("%StartGameBtn")
+	host_input = root_node.get_node("%HostInput")
+	host_btn = root_node.get_node("%HostBtn")
+	lobby_code = root_node.get_node("%LobbyCode")
+	keypad = root_node.get_node("%Keypad")
+	start_game_btn = root_node.get_node("%StartGameBtn")
 
-	HostInput.text = default_host
+	host_input.text = default_host
 
-	HostBtn.pressed.connect(_on_host_pressed)
-	JoinBtn.pressed.connect(_on_join_pressed)
-	StartGameBtn.pressed.connect(_on_start_game_pressed)
+	host_btn.pressed.connect(_on_host_pressed)
+	keypad.code_entered.connect(_on_code_entered)
+	start_game_btn.pressed.connect(_on_start_game_pressed)
 
 	signal_ws_client.connected.connect(_on_connected)
 	signal_ws_client.lobby_hosted.connect(_on_lobby_hosted)
@@ -71,15 +68,15 @@ func show() -> void:
 
 
 func _enter_waiting_room() -> void:
-	StartGameBtn.set_visible(is_host)
-	Entrance.hide()
-	WaitingRoom.show()
+	start_game_btn.set_visible(is_host)
+	entrance.hide()
+	waiting_room.show()
 
 func _process(_delta: float) -> void:
 	signal_ws_client.poll()
 
 func _get_server_url() -> String:
-	var host = HostInput.text
+	var host = host_input.text
 	return "wss://" + host + ":" + str(DEFAULT_SERVER_PORT) + "/ws"
 
 func _on_host_pressed():
@@ -87,10 +84,10 @@ func _on_host_pressed():
 	is_host = true
 	signal_ws_client.connect_to_server(_get_server_url())
 
-func _on_join_pressed():
+func _on_code_entered(code: String):
 	print("----")
 	is_host = false
-	var lobby_id = JoinInput.text.to_int()
+	var lobby_id = code.to_int()
 	signal_ws_client.connect_to_server(_get_server_url(), lobby_id)
 
 func _on_start_game_pressed():
@@ -110,12 +107,12 @@ func _on_connected(pid: int):
 
 func _on_lobby_hosted(pid: int, lobby_id: int):
 	print("[lobby] ", peer.get_unique_id(), " lobby hosted: lobby:", lobby_id, ", peer:", pid)
-	LobbyCode.text = str(lobby_id)
+	lobby_code.text = str(lobby_id)
 	_enter_waiting_room()
 
 func _on_lobby_joined(pid: int, lobby_id: int, is_sealed: bool):
 	print("[lobby] ", peer.get_unique_id(), " lobby joined: lobby:", lobby_id, ", peer:", pid)
-	LobbyCode.text = "Waiting..."
+	lobby_code.text = "Waiting..."
 	_enter_waiting_room()
 
 	if is_sealed:
@@ -174,7 +171,7 @@ func _on_peer_connected(pid: int):
 
 	player_added.emit(pid)
 
-	# HostBtn shouldn't create offers
+	# host_btn shouldn't create offers
 	if not is_host:
 		print("[lobby] ", peer.get_unique_id(), " creating offer for: ", pid)
 		peer_cn.create_offer()
