@@ -7,6 +7,8 @@ signal code_entered(code: String)
 @onready var code = %CodeInput as LineEdit
 
 func _ready() -> void:
+	%Keys.visible = false
+
 	code.text_changed.connect(func(text: String):
 		code.text = text.replace("-", "")
 		if code.text.length() >= 4:
@@ -16,6 +18,8 @@ func _ready() -> void:
 		code.grab_focus()
 
 		_update_ok_button_state(text))
+
+	code.focus_entered.connect(_on_code_focused)
 
 	_update_ok_button_state(code.text)
 
@@ -46,6 +50,11 @@ func _ready() -> void:
 
 func _update_ok_button_state(text: String) -> void:
 	%OK.disabled = text.length() < code.max_length
+
+
+func _on_code_focused() -> void:
+	%Keys.visible = true
+
 
 """
 Handle delete button press. Remove the last character from the code input.
