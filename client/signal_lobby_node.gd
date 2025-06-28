@@ -79,6 +79,9 @@ func _get_server_url() -> String:
 	var host = host_input.text
 	return "wss://" + host + ":" + str(DEFAULT_SERVER_PORT) + "/ws"
 
+func _print_method_call(name: String, message: String):
+	print("[lobby] [", peer.get_unique_id(), "] [", name, "]: ", message)
+
 func _on_host_pressed():
 	print("----")
 	is_host = true
@@ -98,20 +101,21 @@ func _on_start_game_pressed():
 	signal_ws_client.seal_lobby()
 
 func _on_connected(pid: int):
-	print("[lobby] id received: ", pid, " creating mesh")
 	peer.create_mesh(pid)
+	_print_method_call("_on_connected", "creating mesh")
+
 	multiplayer.set_multiplayer_peer(peer)
 	mesh_initialized = true
 
 	player_added.emit(pid)
 
 func _on_lobby_hosted(pid: int, lobby_id: int):
-	print("[lobby] ", peer.get_unique_id(), " lobby hosted: lobby:", lobby_id, ", peer:", pid)
+	_print_method_call("_on_lobby_hosted", "lobby_id: " + str(lobby_id) + ", peer_id: " + str(pid))
 	lobby_code.text = str(lobby_id).insert(3, "-")
 	_enter_waiting_room()
 
 func _on_lobby_joined(pid: int, lobby_id: int, is_sealed: bool):
-	print("[lobby] ", peer.get_unique_id(), " lobby joined: lobby:", lobby_id, ", peer:", pid)
+	_print_method_call("_on_lobby_joined", "lobby_id: " + str(lobby_id) + ", peer_id: " + str(pid))
 	lobby_code.text = "Waiting..."
 	_enter_waiting_room()
 
@@ -119,23 +123,23 @@ func _on_lobby_joined(pid: int, lobby_id: int, is_sealed: bool):
 		_on_lobby_sealed(lobby_id)
 
 func _on_lobby_sealed(lobby_id: int):
-	print("[lobby] ", peer.get_unique_id(), " lobby sealed:", lobby_id)
+	_print_method_call("_on_lobby_sealed", "lobby_id: " + str(lobby_id))
 	lobby_sealed.emit(lobby_id)
 
 func _on_remote_description_received(pid: int, sdp: String, type: String):
 	if peer.has_peer(pid):
-		print("[lobby] ", peer.get_unique_id(), " Setting remote description: ", type, ", ", pid)
+		_print_method_call("_on_remote_description_received", " Setting remote description: " + type + ", " + str(pid))
 		var peer_cn = peer.get_peer(pid).connection
 		peer_cn.set_remote_description(type, sdp)
 
 func _on_candidate_received(pid: int, mid: String, index: int, sdp: String):
 	if peer.has_peer(pid):
-		print("[lobby] ", peer.get_unique_id(), " Adding ice candidate: ", pid, ", ", mid, ", ", index, ", ", sdp)
+		_print_method_call("_on_candidate_received", " Adding ice candidate: " + str(pid) + ", " + mid + ", " + str(index) + ", " + sdp)
 		var peer_cn = peer.get_peer(pid).connection
 		peer_cn.add_ice_candidate(mid, index, sdp)
 
 func _on_peer_connected(pid: int):
-	print("[lobby] ", peer.get_unique_id(), " peer connected: ", pid)
+	_print_method_call("_on_peer_connected", " peer connected: " + str(pid))
 
 	var peer_cn: WebRTCPeerConnection = WebRTCPeerConnection.new()
 	peer_cn.initialize({
@@ -166,12 +170,12 @@ func _on_peer_connected(pid: int):
 			signal_ws_client.send_candidate(pid, mid, index, sdp)
 	)
 
-	print("[lobby] ", peer.get_unique_id(), " adding peer: ", pid)
+	print("[lobby] [", peer.get_unique_id(), "] adding peer: ", pid)
 	peer.add_peer(peer_cn, pid)
 
 	player_added.emit(pid)
 
 	# host_btn shouldn't create offers
 	if not is_host:
-		print("[lobby] ", peer.get_unique_id(), " creating offer for: ", pid)
+		print("[lobby] [", peer.get_unique_id(), "] creating offer for: ", pid)
 		peer_cn.create_offer()
